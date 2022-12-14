@@ -50,6 +50,14 @@ python setup.py install
 
     ```
 
+## 特性
+
+> 这个作者很懒，下面的东西下次再整理放上来 
+
+- 支持两张图分别进行亮度/对比度调节、频域对齐和直方图校正。
+
+- 支持[lazy_cd](https://github.com/shinianzhihou/lazy_cd)中目标/像素级算法辅助标注
+
 ## 声明
 
 - This repo is the fork of [wkentaro/labelme](https://github.com/wkentaro/labelme).
