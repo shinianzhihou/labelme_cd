@@ -1,6 +1,14 @@
+
+
 # LABELME_CD
 
+
 > 这个作者很懒，名字都没改，代码没咋变，只增加了个变化检测的标注功能。
+
+
+https://user-images.githubusercontent.com/29772895/207556216-cb4934b4-f9ed-42c4-a2a2-d8fa9ad1b63e.mp4
+
+
 
 基于[labelme](https://github.com/wkentaro/labelme/tree/v5.1.0)构建的用于变化检测的标注工具。
 
@@ -14,13 +22,16 @@ conda activate labelme_cd
 conda install pyqt -y
 
 cd labelme_cd
-python setup.py develop
+python setup.py install
 
 ```
 
 ## 使用
 
 1. 首先将待标注数据以 `assets/examples/change_detection/` 的方式放好（支持软连接）
+
+
+
 
 2. `A/` 和 `B/` 表示待标注的两个时相目录，下面的命名保持一致， `label/` 用来存储标注结果
 
