@@ -1,0 +1,39 @@
+plugin:
+  enable: true
+  plugins:
+    - from: [-1]
+      name: "object_cd"
+      args:
+        model_name: "yolov5_cd.yolov5"
+        model_args: 
+          code_root: "/Users/shinian/proj/code/yolov5_cd/yolov5"
+          weights: "/Users/shinian/proj/code/yolov5_cd/yolov5/runs/train/stb_s_1024/weights/best.pt"
+          conf_thres: 0.3
+          iou_thres: 0.3
+          prob_thres: 0.3
+          device: "cpu"
+          stride: 32
+          names: ["changed"] 
+          imgsz: 640
+    - from: [-1]
+      name: "pixel_cd"
+      args:
+        model_name: "sn_cd.sn"
+        model_args: 
+          code_root: "/Users/shinian/proj/code/ChangeDetection"
+          weights: "/Users/shinian/proj/code/work_dirs/debug/epoch_1_f1 _0.000_iou_0.000_f1 _0.000_iou_0.000.pth"
+          choice: cdp_UnetPlusPlus
+          encoder_name: "timm-efficientnet-b0"
+          encoder_weights: "noisy-student"
+          in_channels: 3
+          classes: 2
+          siam_encoder: true
+          fusion_form: "concat"
+          scale: false
+          device: "cpu"
+          names: ["changed"] 
+
+
+
+  output:
+    from: [0,2]
