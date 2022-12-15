@@ -1539,7 +1539,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.canvas.setEnabled(False)
         if filename is None:
             filename = self.settings.value("filename", "")
-        filename = str(filename)
+        filename = str(filename).replace("\\",'/')
+
         if not QtCore.QFile.exists(filename):
             self.errorMessage(
                 self.tr("Error opening file"),
