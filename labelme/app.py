@@ -897,7 +897,7 @@ class MainWindow(QtWidgets.QMainWindow):
             label_file = self.get_saved_filename(osp.splitext(self.imagePath)[0]) + ".json"
             if self.output_dir:
                 label_file_without_path = osp.basename(label_file)
-                label_file = osp.join(self.output_dir, label_file_without_path)
+                label_file = self.custom_join(self.output_dir, label_file_without_path)
             self.saveLabels(label_file)
             return
         self.dirty = True
@@ -1516,13 +1516,13 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def get_paired_filename(self, file):
         sA, sB = ['A', 'B'] if 'A' in file else ['B', 'A']
-        pa, pb = os.sep + sA + os.sep, os.sep + sB + os.sep  # /A/ , /B/ substrings
+        pa, pb = '/' + sA + '/', '/' + sB + '/'  # /A/ , /B/ substrings
         return pb.join(file.rsplit(pa, 1))
     
     def get_saved_filename(self, file):
         sC = 'A' if 'A' in file else 'B'
         sL = 'label'
-        pa, pb = os.sep + sC + os.sep, os.sep + sL + os.sep  # /A/ , /B/ substrings
+        pa, pb = '/' + sC + '/', '/' + sL + '/'  # /A/ , /label/ substrings
         return pb.join(file.rsplit(pa, 1))
 
     def loadFile(self, filename=None):
@@ -1554,7 +1554,7 @@ class MainWindow(QtWidgets.QMainWindow):
         label_file = self.get_saved_filename(osp.splitext(filename)[0]) + ".json"
         if self.output_dir:
             label_file_without_path = osp.basename(label_file)
-            label_file = osp.join(self.output_dir, label_file_without_path)
+            label_file = self.custom_join(self.output_dir, label_file_without_path)
         if QtCore.QFile.exists(label_file) and LabelFile.is_label_file(
             label_file
         ):
@@ -1573,11 +1573,11 @@ class MainWindow(QtWidgets.QMainWindow):
                 return False
             self.imageData = self.labelFile.imageData
             self.imageData_1 = self.labelFile.imageData_1
-            self.imagePath = osp.join(
+            self.imagePath = self.custom_join(
                 osp.dirname(label_file),
                 self.labelFile.imagePath,
             )
-            self.imagePath_1 = osp.join(
+            self.imagePath_1 = self.custom_join(
                 osp.dirname(label_file),
                 self.labelFile.imagePath_1,
             )
@@ -1948,11 +1948,11 @@ class MainWindow(QtWidgets.QMainWindow):
         dlg.setOption(QtWidgets.QFileDialog.DontUseNativeDialog, False)
         basename = osp.basename(osp.splitext(self.filename)[0])
         if self.output_dir:
-            default_labelfile_name = osp.join(
+            default_labelfile_name = self.custom_join(
                 self.output_dir, basename + LabelFile.suffix
             )
         else:
-            default_labelfile_name = osp.join(
+            default_labelfile_name = self.custom_join(
                 self.currentPath(), basename + LabelFile.suffix
             )
         filename = dlg.getSaveFileName(
@@ -2142,7 +2142,7 @@ class MainWindow(QtWidgets.QMainWindow):
             label_file = self.get_saved_filename(osp.splitext(file)[0]) + ".json"
             if self.output_dir:
                 label_file_without_path = osp.basename(label_file)
-                label_file = osp.join(self.output_dir, label_file_without_path)
+                label_file = self.custom_join(self.output_dir, label_file_without_path)
             item = QtWidgets.QListWidgetItem(file)
             item.setFlags(Qt.ItemIsEnabled | Qt.ItemIsSelectable)
             if QtCore.QFile.exists(label_file) and LabelFile.is_label_file(
@@ -2176,7 +2176,8 @@ class MainWindow(QtWidgets.QMainWindow):
             label_file = self.get_saved_filename(osp.splitext(filename)[0]) + ".json"
             if self.output_dir:
                 label_file_without_path = osp.basename(label_file)
-                label_file = osp.join(self.output_dir, label_file_without_path)
+                label_file = self.custom_join(self.output_dir, label_file_without_path)
+                label_file = self.parse_path(label_file)
             item = QtWidgets.QListWidgetItem(filename)
             item.setFlags(Qt.ItemIsEnabled | Qt.ItemIsSelectable)
             if QtCore.QFile.exists(label_file) and LabelFile.is_label_file(
@@ -2198,7 +2199,25 @@ class MainWindow(QtWidgets.QMainWindow):
         for root, dirs, files in os.walk(folderPath):
             for file in files:
                 if file.lower().endswith(tuple(extensions)):
-                    relativePath = osp.join(root, file)
+                    relativePath = self.custom_join(root, file)
                     images.append(relativePath)
+        images = self.parse_path(images)
         images = natsort.os_sorted(images)
         return images
+
+    def parse_path(self, files):
+        if isinstance(files, list):
+            return [file.replace('\\','/') for file in files]
+        else:
+            return files.replace('\\','/')
+
+    def path_wrapper(func):
+        def wrapper(self, *args, **kwargs):
+            raw = func(self, *args, **kwargs)
+            ret = self.parse_path(raw)
+            return ret
+        return wrapper
+
+    @path_wrapper
+    def custom_join(self, *args, **kwargs):
+        return osp.join(*args, **kwargs)
