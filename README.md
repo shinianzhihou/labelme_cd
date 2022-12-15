@@ -31,8 +31,6 @@ python setup.py install
 1. 首先将待标注数据以 `assets/examples/change_detection/` 的方式放好（支持软连接）
 
 
-
-
 2. `A/` 和 `B/` 表示待标注的两个时相目录，下面的命名保持一致， `label/` 用来存储标注结果
 
 3. 通过如下方式启动软件进行标注：
@@ -57,6 +55,8 @@ python setup.py install
 - 支持两张图分别进行亮度/对比度调节、频域对齐和直方图校正。
 
 - 支持[lazy_cd](https://github.com/shinianzhihou/lazy_cd)中目标/像素级算法辅助标注
+
+- 理论上可以标注所有的 A+B 图像，具体可以参考 `./assets/examples/` 下面的其它例子，如 `RGB-IR` 的场景标注
 
 ## 声明
 
