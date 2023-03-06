@@ -48,6 +48,12 @@ python setup.py install
 
     ```
 
+4. 转化为 mask (可选)
+
+    ```bash
+    python3 tools/labelme2mask.py -i assets/examples/change_detection/label/ -o assets/examples/change_detection/label/ -f 255
+    ```
+
 ## 特性
 
 > 这个作者很懒，下面的东西下次再整理放上来 
